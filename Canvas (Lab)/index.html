@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Lab</title>
+    <script src="Fish.js"></script>
+    <script src="Player.js"></script>
+</head>
+<style>
+
+</style>
+
+<body>
+    <canvas id="myCanvas" width="800" height="600" style="background-color: lightgray;"></canvas>
+    <script>
+        let paper = document.getElementById('myCanvas');
+
+        let fishs = [];
+
+        // let x = 100;
+        // let y = 100;
+        // let size = 50;
+
+        // let fish = new Fish(x, y, size);
+        // fish.render(paper);
+        let player = new Player(paper.width / 2, paper.height / 2);
+        player.renderImg(paper)
+
+
+        function createFishs(number) {
+            for (let i = 0; i < number; i++) {
+                let x = (Math.random() > 0.5) ? randomNumber(paper.width, paper.width + 100) : randomNumber(-100, 0);
+                let y = randomNumber(0, paper.height - 200);
+                let size = randomNumber(30, 100);
+                let color = randomColor();
+                let speed = randomNumber(4, 15)
+
+                let fish = new Fish(x, y, size, color, speed);
+                // if (fish.x > paper.width / 2) {
+                //     fish.direct = "left";
+                // } else {
+                //     fish.direct = "right";
+                // }
+
+                (fish.x > paper.width / 2) ? fish.direct = "left": fish.direct = "right";
+                fish.init();
+                fishs.push(fish);
+            }
+
+            console.log(fishs);
+        }
+
+        function renderFish() {
+            for (let i = 0; i < fishs.length; i++) {
+                fishs[i].renderImg(paper);
+            }
+        }
+
+        function moveFish() {
+            for (let i = 0; i < fishs.length; i++) {
+                fishs[i].move();
+            }
+        }
+
+        function randomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
+        }
+
+        function randomColor() {
+            let r = randomNumber(0, 255);
+            let g = randomNumber(0, 255);
+            let b = randomNumber(0, 255);
+
+            return `rgb(${r},${g},${b})`; //rgb(100,200,100);
+        }
+
+        function clearScreen(paper) {
+            let pen = paper.getContext('2d');
+            pen.clearRect(0, 0, paper.width, paper.height);
+        }
+
+        function movePlayer(evt) {
+            switch (evt.key) {
+                case "d":
+                    player.direct = "right";
+                    player.move();
+                    break;
+                case "a":
+                    player.direct = "left";
+                    player.move();
+                    break;
+            }
+        }
+
+        createFishs(10);
+
+        function main() {
+            clearScreen(paper);
+            moveFish();
+            renderFish();
+            player.renderImg(paper)
+        }
+
+        setInterval(main, 60);
+
+        window.addEventListener('keydown', movePlayer)
+    </script>
+</body>
+
+</html>
